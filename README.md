@@ -1,4 +1,10 @@
-import React, { useState } from "react";
+// SaaS EstudaFácil – versão com cobrança via Stripe (sem videoaulas)
+import { useState } from "react";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Card } from "@/components/ui/card";
+import { motion } from "framer-motion";
+import { Search, CreditCard } from "lucide-react";
 
 const materias = [
   "Matemática", "Português", "História", "Geografia",
@@ -12,24 +18,6 @@ const horariosPadrao = [
   { hora: "11:00", materia: "Geografia" },
   { hora: "13:00", materia: "Ciências" },
   { hora: "14:00", materia: "Inglês" }
-];
-
-const videoAulas = [
-  {
-    titulo: "Soma e Subtração",
-    materia: "Matemática",
-    url: "https://www.youtube.com/embed/KfF5MXiHqVU"
-  },
-  {
-    titulo: "Verbos no presente",
-    materia: "Português",
-    url: "https://www.youtube.com/embed/6N5nZclOuaE"
-  },
-  {
-    titulo: "Revolução Francesa",
-    materia: "História",
-    url: "https://www.youtube.com/embed/B3yKQcqGfF4"
-  }
 ];
 
 const frasesBiblia = [
@@ -55,118 +43,72 @@ export default function EstudaFacilApp() {
   );
 
   return (
-    <div style={{ 
-      minHeight: "100vh", 
-      background: "linear-gradient(to bottom right, #bfdbfe, #c7d2fe)", 
-      display: "flex", 
-      justifyContent: "center", 
-      padding: "20px", 
-      fontFamily: "Arial, sans-serif" 
-    }}>
-      <div style={{ maxWidth: 400, width: "100%", background: "white", borderRadius: 20, padding: 20, boxShadow: "0 10px 15px rgba(0,0,0,0.1)" }}>
-        <h1 style={{ color: "#1e40af", fontWeight: "bold", marginBottom: 20 }}>📘 EstudaFácil</h1>
+    <div className="min-h-screen flex flex-col items-center bg-gradient-to-br from-blue-100 to-purple-200 p-4">
+      <h1 className="text-2xl font-bold text-blue-800 mb-4">📘 EstudaFácil</h1>
 
+      <motion.div initial={{ opacity: 0, y: -30 }} animate={{ opacity: 1, y: 0 }} className="w-full max-w-md">
         {!loggedIn ? (
-          <>
-            <h2 style={{ marginBottom: 15 }}>Bem-vindo ao EstudaFácil!</h2>
-            <input
-              type="text"
+          <Card className="rounded-2xl shadow-lg p-6">
+            <h2 className="text-xl font-bold mb-4">Bem-vindo ao EstudaFácil!</h2>
+            <Input
               placeholder="Seu nome..."
               value={name}
               onChange={(e) => setName(e.target.value)}
-              style={{ width: "100%", padding: 10, borderRadius: 10, border: "1px solid #ddd", marginBottom: 20 }}
+              className="mb-4"
             />
-            <button
-              onClick={handleLogin}
-              style={{ width: "100%", padding: 10, backgroundColor: "#2563eb", color: "white", border: "none", borderRadius: 10, cursor: "pointer" }}
-            >
+            <Button onClick={handleLogin} className="w-full">
               Começar a Estudar
-            </button>
-          </>
+            </Button>
+          </Card>
         ) : (
-          <>
-            <div style={{ marginBottom: 20 }}>
-              <h2>Olá, {name}! 👋</h2>
-              <p style={{ fontStyle: "italic", color: "#6b21a8" }}>📖 {frase}</p>
+          <Card className="rounded-2xl shadow-lg p-6 space-y-6">
+            <div>
+              <h2 className="text-xl font-semibold mb-2">Olá, {name}! 👋</h2>
+              <p className="italic text-sm text-purple-700">📖 {frase}</p>
             </div>
 
-            <div style={{ marginBottom: 20 }}>
-              <h3>📚 Pastas de Matérias</h3>
-              <input
-                type="text"
-                placeholder="Buscar matéria..."
-                value={search}
-                onChange={(e) => setSearch(e.target.value)}
-                style={{ width: "100%", padding: 8, borderRadius: 10, border: "1px solid #ddd", marginBottom: 10 }}
-              />
-              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10 }}>
-                {filteredMaterias.map((materia, i) => (
-                  <div key={i} style={{ background: "#f3f4f6", padding: 10, borderRadius: 12, textAlign: "center", fontWeight: "600" }}>
+            <div>
+              <h3 className="text-lg font-medium mb-2">📚 Pastas de Matérias</h3>
+              <div className="mb-4 flex items-center gap-2">
+                <Search className="w-5 h-5 text-gray-500" />
+                <Input placeholder="Buscar matéria..." value={search} onChange={(e) => setSearch(e.target.value)} />
+              </div>
+              <div className="grid grid-cols-2 gap-3">
+                {filteredMaterias.map((materia, index) => (
+                  <div key={index} className="bg-white rounded-xl p-3 shadow text-center text-sm font-medium">
                     {materia}
                   </div>
                 ))}
               </div>
             </div>
 
-            <div style={{ marginBottom: 20 }}>
-              <h3>🕒 Estudo Diário</h3>
-              <ul style={{ listStyle: "none", paddingLeft: 0 }}>
-                {horariosPadrao.map((item, i) => (
-                  <li key={i} style={{ background: "#f3f4f6", padding: 10, borderRadius: 12, marginBottom: 6, display: "flex", justifyContent: "space-between" }}>
-                    <span style={{ fontWeight: "600" }}>{item.hora}</span>
+            <div>
+              <h3 className="text-lg font-medium mb-2">🕒 Estudo Diário</h3>
+              <ul className="text-sm space-y-2">
+                {horariosPadrao.map((item, index) => (
+                  <li key={index} className="bg-white rounded-xl shadow p-3 flex justify-between items-center">
+                    <span className="font-semibold">{item.hora}</span>
                     <span>{item.materia}</span>
                   </li>
                 ))}
               </ul>
             </div>
 
-            <div style={{ marginBottom: 20 }}>
-              <h3>🎥 Videoaulas</h3>
-              {videoAulas.map((video, i) => (
-                <div key={i} style={{ marginBottom: 15 }}>
-                  <div style={{ fontWeight: "600", marginBottom: 6 }}>
-                    ▶️ {video.materia} — {video.titulo}
-                  </div>
-                  <div style={{ position: "relative", paddingBottom: "56.25%", height: 0, overflow: "hidden", borderRadius: 15 }}>
-                    <iframe
-                      src={video.url}
-                      title={video.titulo}
-                      frameBorder="0"
-                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                      allowFullScreen
-                      style={{ position: "absolute", top: 0, left: 0, width: "100%", height: "100%", borderRadius: 15 }}
-                    />
-                  </div>
-                </div>
-              ))}
-            </div>
-
-            <div style={{ textAlign: "center" }}>
-              <h3>💳 Apoie o projeto</h3>
-              <p style={{ marginBottom: 10, color: "#4b5563" }}>
-                Ajude a manter a plataforma ativa e receba recursos extras!
-              </p>
+            <div>
+              <h3 className="text-lg font-medium mb-2">💳 Apoie o projeto</h3>
+              <p className="text-sm text-gray-600 mb-3">Ajude a manter a plataforma ativa e receba recursos extras!</p>
               <a
-                href="https://buy.stripe.com/test_abc123"
+                href="https://buy.stripe.com/test_abc123" // Substitua com seu link real do Stripe
                 target="_blank"
                 rel="noopener noreferrer"
-                style={{
-                  display: "inline-block",
-                  padding: "10px 20px",
-                  backgroundColor: "#2563eb",
-                  color: "white",
-                  borderRadius: 12,
-                  textDecoration: "none",
-                  fontWeight: "600",
-                  cursor: "pointer"
-                }}
+                className="inline-flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-xl shadow"
               >
-                💳 Apoiar com Stripe
+                <CreditCard className="w-5 h-5" /> Apoiar com Stripe
               </a>
             </div>
-          </>
+          </Card>
         )}
-      </div>
+      </motion.div>
     </div>
   );
 }
